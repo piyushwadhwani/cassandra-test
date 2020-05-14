@@ -26,7 +26,7 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
                 String.valueOf(cassandraContainer.getMappedPort(CassandraContainer.CQL_PORT));
 
         log.info("Started {} on port {}", cassandraContainer.getDockerImageName(), exposedPort);
-        log.info("Started {} on host {}", cassandraContainer.getDockerImageName(), cassandraContainer.getTestHostIpAddress());
+        log.info("Started {} on Network {}", cassandraContainer.getDockerImageName(), cassandraContainer.getNetwork());
 
         HashMap<String, String> hm = new HashMap<>();
         hm.put("quarkus.cassandra.port", exposedPort);
