@@ -1,9 +1,10 @@
 package com.tekdynamix.cassandra;
 
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
+import com.datastax.driver.core.Session;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
-import io.vertx.cassandra.CassandraClient;
-import io.vertx.cassandra.CassandraClientOptions;
 import io.vertx.core.Vertx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,6 @@ import org.testcontainers.containers.wait.CassandraQueryWaitStrategy;
 
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -41,40 +41,30 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
         hm.put("quarkus.cassandra.port", exposedPort);
         hm.put("quarkus.cassandra.host", "localhost");
 
-        initializeDatabase("localhost",exposedPort);
+        initializeDatabase("localhost", exposedPort);
         return hm;
     }
 
     private void initializeDatabase(String host, String port) {
-        CassandraClientOptions options = new CassandraClientOptions()
-                .addContactPoint(host).setPort(Integer.parseInt(port));
-        CassandraClient client = CassandraClient.create(vertx, options);
-        client.executeWithFullFetch( "CREATE KEYSPACE IF NOT EXISTS k1 WITH replication "
-                + "= {'class':'SimpleStrategy', 'replication_factor':1}",executeWithFullFetch -> {
-            if (executeWithFullFetch.succeeded()) {
-                log.info("Keyspace Creation Successful ");
-                List<Row> rows = executeWithFullFetch.result();
-                for (Row row : rows) {
-                    // handle each row here
-                }
-            } else {
-                System.out.println("Unable to execute the query");
-                executeWithFullFetch.cause().printStackTrace();
-            }
-        });
-        client.executeWithFullFetch("CREATE TABLE IF NOT EXISTS k1.product(id uuid PRIMARY KEY, description text)"
-                ,executeWithFullFetch -> {
-            if (executeWithFullFetch.succeeded()) {
-                log.info("Table Creation Successful ");
-                List<Row> rows = executeWithFullFetch.result();
-                for (Row row : rows) {
-                    // handle each row here
-                }
-            } else {
-                log.error("Unable to execute the query",executeWithFullFetch.cause());
-                executeWithFullFetch.cause().printStackTrace();
-            }
-        });
+        Cluster cluster = null;
+
+
+        try {
+            cluster = Cluster.builder()                                                    // (1)
+                    .addContactPoint(host).withPort(Integer.parseInt(port))
+                    .build();
+            Session session = cluster.connect();
+            ResultSet rs = session.execute("select release_version from system.local");    // (3)
+            Row row = rs.one();
+            log.info(row.getString("release_version"));
+
+
+        } catch (Exception e) {
+            throw e;
+
+        } finally {
+            if (cluster != null) cluster.close();                                          // (5)
+        }
     }
 
     @Override
