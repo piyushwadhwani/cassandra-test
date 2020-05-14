@@ -1,9 +1,9 @@
 package com.tekdynamix.cassandra;
 
-import com.datastax.driver.core.Cluster;
+/*import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
+import com.datastax.driver.core.Session;*/
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
 import io.vertx.core.Vertx;
 import org.slf4j.Logger;
@@ -43,6 +43,7 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
         return hm;
     }
 
+    /**-
     private void initializeDatabase(String host, String port) {
         Cluster cluster = null;
 
@@ -64,7 +65,7 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
         } finally {
             if (cluster != null) cluster.close();                                          // (5)
         }
-    }
+    }*/
 
     @Override
     public void stop() {
