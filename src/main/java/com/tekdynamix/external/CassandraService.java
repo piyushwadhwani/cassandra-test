@@ -33,7 +33,7 @@ public class CassandraService {
     void init() {
         log.info("Initializing Cassandra Client");
         CassandraClientOptions options = new CassandraClientOptions()
-                .addContactPoint(dbHost + ":" + dbPort);
+                .addContactPoint(dbHost).setPort(Integer.parseInt(dbPort));
         client = CassandraClient.createShared(vertx, "sharedClientName", options);
         log.info(" Cassandra Client Connection Status {}", client.isConnected());
     }
