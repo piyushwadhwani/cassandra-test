@@ -23,7 +23,7 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
     private static GenericContainer<?> cassandraContainer;
     private static CassandraContainer<?> dd;
     @ConfigProperty(name = "congruent.cassandra.signup.keyspace")
-    String keysapceProp;
+    Optional<String> keyspaceProp;
 
     @ConfigProperty(name = "congruent.cassandra.signup.table")
     Optional<String> tableProp;
@@ -35,7 +35,7 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
     public Map<String, String> start() {
 
         this.table = tableProp.orElse("signup");
-        this.keyspace = tableProp.orElse("keyspace");
+        this.keyspace = keyspaceProp.orElse("congruent");
 
 
         try {
@@ -79,15 +79,15 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
             ResultSet rs = session.execute("select release_version from system.local");    // (3)
             Row row = rs.one();
             log.info("Release Version for Cassandra is" + row.getString("release_version"));
-            log.info("Initializing Keyspace ..... {}", keysapce);
-            rs = session.execute("CREATE KEYSPACE IF NOT EXISTS " + keysapce + " WITH replication "
+            log.info("Initializing Keyspace ..... {}", this.keyspace);
+            rs = session.execute("CREATE KEYSPACE IF NOT EXISTS " + keyspace + " WITH replication "
                     + "= {'class':'SimpleStrategy', 'replication_factor':1}");    // (3)
             row = rs.one();
             log.info("Keyspace Cassandra is {} ", row);
 
             log.info("Initializing Table ..... {}", table);
             rs = session.execute("CREATE TABLE IF NOT EXISTS "
-                    + keysapce + "." + table + " (username text PRIMARY KEY, password text,email text)");
+                    + keyspace + "." + table + " (username text PRIMARY KEY, password text,email text)");
             row = rs.one();
             log.info("Table Cassandra is {} ", row);
 
