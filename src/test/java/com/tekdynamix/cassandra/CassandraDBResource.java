@@ -62,7 +62,7 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
             Session session = cluster.connect();
             ResultSet rs = session.execute("select release_version from system.local");    // (3)
             Row row = rs.one();
-            log.info("Release Version for Cassandra is   .. "+row.getString("release_version"));
+            log.info("Release Version for Cassandra is"+row.getString("release_version"));
 
 
         } catch (Exception e) {
