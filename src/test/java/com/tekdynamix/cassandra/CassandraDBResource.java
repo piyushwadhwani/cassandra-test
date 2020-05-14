@@ -59,7 +59,7 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
 
 
         } catch (Exception e) {
-            throw e;
+           log.error("Catch Exception while creating cassandra test db",e);
 
         } finally {
             if (cluster != null) cluster.close();                                          // (5)
