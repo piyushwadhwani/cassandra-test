@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.CassandraContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.CassandraQueryWaitStrategy;
-
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,26 +18,36 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
 
     private static final Logger log = LoggerFactory.getLogger(CassandraDBResource.class);
     private static GenericContainer<?> cassandraContainer;
+    private static CassandraContainer<?> dd;
 
 
     @Override
     public Map<String, String> start() {
-        cassandraContainer = new CassandraContainer<>();
-        cassandraContainer.setWaitStrategy(new CassandraQueryWaitStrategy());
-        cassandraContainer.start();
+        try {
+            cassandraContainer = new CassandraContainer<>();
+            cassandraContainer.setWaitStrategy(new CassandraQueryWaitStrategy());
+            cassandraContainer.start();
 
-        String exposedPort =
-                String.valueOf(cassandraContainer.getMappedPort(CassandraContainer.CQL_PORT));
+            String exposedPort =
+                    String.valueOf(cassandraContainer.getMappedPort(CassandraContainer.CQL_PORT));
 
-        log.info("Started {} on port {}", cassandraContainer.getDockerImageName(), exposedPort);
-        log.info("Started {} on Network {}", cassandraContainer.getDockerImageName(), cassandraContainer.getNetwork());
+            log.info("Started {} on port {}", cassandraContainer.getDockerImageName(), exposedPort);
+            log.info("Started {} on Network {}", cassandraContainer.getDockerImageName(), cassandraContainer.getNetwork());
 
-        HashMap<String, String> hm = new HashMap<>();
-        hm.put("quarkus.cassandra.port", exposedPort);
-        hm.put("quarkus.cassandra.host", "localhost");
- 
-        // initializeDatabase("localhost", exposedPort);
-        return hm;
+            HashMap<String, String> hm = new HashMap<>();
+            hm.put("quarkus.cassandra.port", exposedPort);
+            hm.put("quarkus.cassandra.host", "localhost");
+
+            // initializeDatabase("localhost", exposedPort);
+            return hm;
+        }
+        catch(Exception e) {
+            log.error("Error in Initializing Resource ",e);
+            HashMap<String, String> hm = new HashMap<>();
+            hm.put("quarkus.cassandra.port", "9999");
+            hm.put("quarkus.cassandra.host", "localhost");
+            return hm;
+        }
     }
 
     /**-
