@@ -22,20 +22,20 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
     private static final Logger log = LoggerFactory.getLogger(CassandraDBResource.class);
     private static GenericContainer<?> cassandraContainer;
     private static CassandraContainer<?> dd;
-    @ConfigProperty(name = "congruent.cassandra.signup.keyspace")
-    Optional<String> keyspaceProp;
+   // @ConfigProperty(name = "congruent.cassandra.signup.keyspace")
+    //Optional<String> keyspaceProp;
 
-    @ConfigProperty(name = "congruent.cassandra.signup.table")
-    Optional<String> tableProp;
-    String table;
-    String keyspace;
+    //@ConfigProperty(name = "congruent.cassandra.signup.table")
+    //Optional<String> tableProp;
+    String table="signup";
+    String keyspace="congruent";
 
 
     @Override
     public Map<String, String> start() {
 
-        this.table = tableProp.orElse("signup");
-        this.keyspace = keyspaceProp.orElse("congruent");
+      //  this.table = tableProp.orElse("signup");
+      //  this.keyspace = keyspaceProp.orElse("congruent");
 
 
         try {
