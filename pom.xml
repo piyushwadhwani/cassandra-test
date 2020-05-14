@@ -65,6 +65,14 @@
       <scope>test</scope>
     </dependency>
     <!-- cassandra test end -->
+    <!-- vert.x approach -->
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-cassandra-client</artifactId>
+      <version>3.9.0</version>
+    </dependency>
+    <!-- vert.x approach  end-->
+
   </dependencies>
   <build>
     <plugins>

@@ -9,9 +9,9 @@ import org.testcontainers.containers.wait.CassandraQueryWaitStrategy;
 import org.testcontainers.junit.jupiter.Container;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
-import static org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages.LOGGER;
 
 public class CassandraDBResource implements QuarkusTestResourceLifecycleManager {
 
@@ -23,10 +23,16 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
         cassandraContainer = new CassandraContainer<>();
         cassandraContainer.setWaitStrategy(new CassandraQueryWaitStrategy());
         cassandraContainer.start();
+
         String exposedPort =
                 String.valueOf(cassandraContainer.getMappedPort(CassandraContainer.CQL_PORT));
-        LOGGER.infof("Started %s on port %s", cassandraContainer.getDockerImageName(), exposedPort);
-        return Collections.singletonMap("quarkus.cassandra.docker_port", exposedPort);
+        log.info("Started %s on port %s", cassandraContainer.getDockerImageName(), exposedPort);
+        log.info("Started %s on host %s", cassandraContainer.getDockerImageName(),  cassandraContainer.getExtraHosts());
+
+        HashMap<String,String> hm=new HashMap<>();
+        hm.put("quarkus.cassandra.port",exposedPort);
+        hm.put("quarkus.cassandra.host","localhost");
+        return hm;
     }
 
     @Override

@@ -5,8 +5,8 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class CassandraService {
 
-    @Inject
-    public String getResource(CqlSession cql) {
+
+    public String getResource() {
 
         return "hello";
 
