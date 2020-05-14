@@ -1,5 +1,6 @@
 package com.tekdynamix.external;
 
+import com.datastax.driver.core.Row;
 import io.vertx.cassandra.CassandraClient;
 import io.vertx.cassandra.CassandraClientOptions;
 import io.vertx.core.Vertx;
@@ -35,22 +36,23 @@ public class CassandraService {
     private static final Logger log = LoggerFactory.getLogger(CassandraService.class);
 
 
-   // CassandraClient client;
+    CassandraClient client;
 
     @PostConstruct
     void init() {
-       /* log.info("Initializing Cassandra Client");
+        log.info("Initializing Cassandra Client");
         CassandraClientOptions options = new CassandraClientOptions()
                 .addContactPoint(dbHost).setPort(Integer.parseInt(dbPort));
         client = CassandraClient.createShared(vertx, "sharedClientName", options);
         log.info(" Cassandra Client Connection Status {}", client.isConnected());
-        */
+        
 
     }
 
 
     public String getResource() {
-        /*client.executeWithFullFetch("SELECT * FROM my_keyspace.my_table where my_key = 'my_value'", executeWithFullFetch -> {
+
+        client.executeWithFullFetch("SELECT * FROM "+keysapce+"."+table+"  ", executeWithFullFetch -> {
             if (executeWithFullFetch.succeeded()) {
                 List<Row> rows = executeWithFullFetch.result();
                 for (Row row : rows) {
@@ -60,7 +62,7 @@ public class CassandraService {
                 log.error("Unable to execute the query",executeWithFullFetch.cause());
                 executeWithFullFetch.cause().printStackTrace();
             }
-        });*/
+        });
 
         return "hello";
 
