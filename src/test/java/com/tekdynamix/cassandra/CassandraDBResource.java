@@ -43,7 +43,7 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
         return hm;
     }
 
-    /**- 
+    /**-
     private void initializeDatabase(String host, String port) {
         Cluster cluster = null;
 

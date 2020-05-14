@@ -71,6 +71,7 @@
       <version>1.14.1</version>
       <scope>test</scope>
     </dependency>
+    <!--
     <dependency>
       <groupId>com.datastax.oss</groupId>
       <artifactId>java-driver-core</artifactId>
@@ -88,8 +89,7 @@
       <artifactId>java-driver-query-builder</artifactId>
       <version>4.6.1</version>
       <scope>test</scope>
-
-    </dependency>
+    </dependency>-->
     <!-- cassandra test end -->
 
 
