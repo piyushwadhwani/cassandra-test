@@ -1,6 +1,5 @@
 package com.tekdynamix.external;
 
-import com.datastax.driver.core.Row;
 import io.vertx.cassandra.CassandraClient;
 import io.vertx.cassandra.CassandraClientOptions;
 import io.vertx.core.Vertx;
@@ -22,6 +21,13 @@ public class CassandraService {
 
     @ConfigProperty(name = "quarkus.cassandra.port")
     String dbPort;
+
+
+    @ConfigProperty(name = "congruent.cassandra.signup.keyspace")
+    String keysapce;
+
+    @ConfigProperty(name = "congruent.cassandra.signup.table")
+    String table;
 
 
     @Inject

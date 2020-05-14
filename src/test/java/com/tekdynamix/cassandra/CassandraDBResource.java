@@ -5,6 +5,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.Session;
 import io.quarkus.test.common.QuarkusTestResourceLifecycleManager;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.CassandraContainer;
@@ -19,6 +20,12 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
     private static final Logger log = LoggerFactory.getLogger(CassandraDBResource.class);
     private static GenericContainer<?> cassandraContainer;
     private static CassandraContainer<?> dd;
+    @ConfigProperty(name = "congruent.cassandra.signup.keyspace")
+    String keysapce;
+
+    @ConfigProperty(name = "congruent.cassandra.signup.table")
+    String table;
+
 
 
     @Override
@@ -54,6 +61,8 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
         Cluster cluster = null;
 
 
+
+
         try {
 
             cluster = Cluster.builder()                                                    // (1)
@@ -63,6 +72,17 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
             ResultSet rs = session.execute("select release_version from system.local");    // (3)
             Row row = rs.one();
             log.info("Release Version for Cassandra is"+row.getString("release_version"));
+            rs = session.execute("CREATE KEYSPACE IF NOT EXISTS "+keysapce+ "WITH replication "
+                            + "= {'class':'SimpleStrategy', 'replication_factor':1}");    // (3)
+             row = rs.one();
+            log.info("Keyspace Cassandra is {} ",row);
+
+            rs = session.execute("CREATE TABLE IF NOT EXISTS "
+                            +keysapce+"."+table+" (username text PRIMARY KEY, password text,email text)");
+            row = rs.one();
+            log.info("Table Cassandra is {} ",row);
+
+
 
 
         } catch (Exception e) {
@@ -71,6 +91,9 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
         } finally {
             if (cluster != null) cluster.close();                                          // (5)
         }
+    }
+
+    private void initializeKeyspace(Session session ) {
     }
 
     @Override
