@@ -74,7 +74,7 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
                 log.error("Unable to execute the query",executeWithFullFetch.cause());
                 executeWithFullFetch.cause().printStackTrace();
             }
-        }))
+        }));
     }
 
     @Override
