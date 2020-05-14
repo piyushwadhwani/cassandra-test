@@ -37,7 +37,7 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
         HashMap<String, String> hm = new HashMap<>();
         hm.put("quarkus.cassandra.port", exposedPort);
         hm.put("quarkus.cassandra.host", "localhost");
-
+ 
         // initializeDatabase("localhost", exposedPort);
         return hm;
     }
