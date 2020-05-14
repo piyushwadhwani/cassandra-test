@@ -60,6 +60,10 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
     private void initializeDatabase(String host, String port) {
         Cluster cluster = null;
 
+        log.info("Initializing Database...");
+
+
+
 
 
 
@@ -72,11 +76,13 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
             ResultSet rs = session.execute("select release_version from system.local");    // (3)
             Row row = rs.one();
             log.info("Release Version for Cassandra is"+row.getString("release_version"));
-            rs = session.execute("CREATE KEYSPACE IF NOT EXISTS "+keysapce+ "WITH replication "
+            log.info("Initializing Keyspace ..... {}",keysapce);
+            rs = session.execute("CREATE KEYSPACE IF NOT EXISTS "+keysapce+ " WITH replication "
                             + "= {'class':'SimpleStrategy', 'replication_factor':1}");    // (3)
              row = rs.one();
             log.info("Keyspace Cassandra is {} ",row);
 
+            log.info("Initializing Table ..... {}",table);
             rs = session.execute("CREATE TABLE IF NOT EXISTS "
                             +keysapce+"."+table+" (username text PRIMARY KEY, password text,email text)");
             row = rs.one();
