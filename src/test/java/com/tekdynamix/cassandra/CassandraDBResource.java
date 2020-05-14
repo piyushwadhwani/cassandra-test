@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.CassandraContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.CassandraQueryWaitStrategy;
-import org.testcontainers.junit.jupiter.Container;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,12 +24,13 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
 
         String exposedPort =
                 String.valueOf(cassandraContainer.getMappedPort(CassandraContainer.CQL_PORT));
-        log.info("Started {} on port {}", cassandraContainer.getDockerImageName(), exposedPort);
-        log.info("Started {} on host {}", cassandraContainer.getDockerImageName(),  cassandraContainer.getExtraHosts());
 
-        HashMap<String,String> hm=new HashMap<>();
-        hm.put("quarkus.cassandra.port",exposedPort);
-        hm.put("quarkus.cassandra.host","localhost");
+        log.info("Started {} on port {}", cassandraContainer.getDockerImageName(), exposedPort);
+        log.info("Started {} on host {}", cassandraContainer.getDockerImageName(), cassandraContainer.getTestHostIpAddress());
+
+        HashMap<String, String> hm = new HashMap<>();
+        hm.put("quarkus.cassandra.port", exposedPort);
+        hm.put("quarkus.cassandra.host", "localhost");
         return hm;
     }
 
