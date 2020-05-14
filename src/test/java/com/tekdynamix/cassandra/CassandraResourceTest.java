@@ -11,7 +11,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
 @QuarkusTest
-//@QuarkusTestResource(CassandraDBResource.class)
+@QuarkusTestResource(CassandraDBResource.class)
 public class CassandraResourceTest {
     private static final Logger log = LoggerFactory.getLogger(CassandraResourceTest.class);
 
