@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.CassandraContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.CassandraQueryWaitStrategy;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 public class CassandraDBResource implements QuarkusTestResourceLifecycleManager {
@@ -21,15 +23,21 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
     private static GenericContainer<?> cassandraContainer;
     private static CassandraContainer<?> dd;
     @ConfigProperty(name = "congruent.cassandra.signup.keyspace")
-    String keysapce;
+    String keysapceProp;
 
     @ConfigProperty(name = "congruent.cassandra.signup.table")
+    Optional<String> tableProp;
     String table;
-
+    String keyspace;
 
 
     @Override
     public Map<String, String> start() {
+
+        this.table = tableProp.orElse("signup");
+        this.keyspace = tableProp.orElse("keyspace");
+
+
         try {
             cassandraContainer = new CassandraContainer<>();
             cassandraContainer.setWaitStrategy(new CassandraQueryWaitStrategy());
@@ -45,11 +53,10 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
             hm.put("quarkus.cassandra.port", exposedPort);
             hm.put("quarkus.cassandra.host", "localhost");
 
-             initializeDatabase("localhost", exposedPort);
+            initializeDatabase("localhost", exposedPort);
             return hm;
-        }
-        catch(Exception e) {
-            log.error("Error in Initializing Resource ",e);
+        } catch (Exception e) {
+            log.error("Error in Initializing Resource ", e);
             HashMap<String, String> hm = new HashMap<>();
             hm.put("quarkus.cassandra.port", "9999");
             hm.put("quarkus.cassandra.host", "localhost");
@@ -63,10 +70,6 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
         log.info("Initializing Database...");
 
 
-
-
-
-
         try {
 
             cluster = Cluster.builder()                                                    // (1)
@@ -75,31 +78,29 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
             Session session = cluster.connect();
             ResultSet rs = session.execute("select release_version from system.local");    // (3)
             Row row = rs.one();
-            log.info("Release Version for Cassandra is"+row.getString("release_version"));
-            log.info("Initializing Keyspace ..... {}",keysapce);
-            rs = session.execute("CREATE KEYSPACE IF NOT EXISTS "+keysapce+ " WITH replication "
-                            + "= {'class':'SimpleStrategy', 'replication_factor':1}");    // (3)
-             row = rs.one();
-            log.info("Keyspace Cassandra is {} ",row);
-
-            log.info("Initializing Table ..... {}",table);
-            rs = session.execute("CREATE TABLE IF NOT EXISTS "
-                            +keysapce+"."+table+" (username text PRIMARY KEY, password text,email text)");
+            log.info("Release Version for Cassandra is" + row.getString("release_version"));
+            log.info("Initializing Keyspace ..... {}", keysapce);
+            rs = session.execute("CREATE KEYSPACE IF NOT EXISTS " + keysapce + " WITH replication "
+                    + "= {'class':'SimpleStrategy', 'replication_factor':1}");    // (3)
             row = rs.one();
-            log.info("Table Cassandra is {} ",row);
+            log.info("Keyspace Cassandra is {} ", row);
 
-
+            log.info("Initializing Table ..... {}", table);
+            rs = session.execute("CREATE TABLE IF NOT EXISTS "
+                    + keysapce + "." + table + " (username text PRIMARY KEY, password text,email text)");
+            row = rs.one();
+            log.info("Table Cassandra is {} ", row);
 
 
         } catch (Exception e) {
-           log.error("Catch Exception while creating cassandra test db",e);
+            log.error("Catch Exception while creating cassandra test db", e);
 
         } finally {
             if (cluster != null) cluster.close();                                          // (5)
         }
     }
 
-    private void initializeKeyspace(Session session ) {
+    private void initializeKeyspace(Session session) {
     }
 
     @Override
