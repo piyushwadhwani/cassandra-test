@@ -22,8 +22,6 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
     private static final Logger log = LoggerFactory.getLogger(CassandraDBResource.class);
     private static GenericContainer<?> cassandraContainer;
 
-    @Inject
-    Vertx vertx;
 
     @Override
     public Map<String, String> start() {
@@ -50,6 +48,7 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
 
 
         try {
+
             cluster = Cluster.builder()                                                    // (1)
                     .addContactPoint(host).withPort(Integer.parseInt(port))
                     .build();
