@@ -53,11 +53,14 @@
             <scope>test</scope>
         </dependency>
         <!-- extension approach -->
+
         <dependency>
             <groupId>com.datastax.oss.quarkus</groupId>
             <artifactId>cassandra-quarkus-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+
+        <!--
         <dependency>
             <groupId>com.datastax.oss</groupId>
             <artifactId>java-driver-core</artifactId>
@@ -73,6 +76,7 @@
             <artifactId>java-driver-mapper-processor</artifactId>
             <version>4.6.1</version>
         </dependency>
+        -->
         <!-- extension approach end-->
         <!-- vert.x approach -->
         <!--
