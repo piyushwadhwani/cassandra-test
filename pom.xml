@@ -51,6 +51,13 @@
       <artifactId>rest-assured</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- vert.x approach -->
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-cassandra-client</artifactId>
+      <version>3.9.0</version>
+    </dependency>
+
     <!-- cassandra test-->
     <dependency>
       <groupId>org.testcontainers</groupId>
@@ -64,7 +71,30 @@
       <version>1.14.1</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.datastax.cassandra</groupId>
+      <artifactId>cassandra-driver-core</artifactId>
+      <version>3.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.datastax.cassandra</groupId>
+      <artifactId>cassandra-driver-mapping</artifactId>
+      <version>3.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.datastax.cassandra</groupId>
+      <artifactId>cassandra-driver-extras</artifactId>
+      <version>3.9.0</version>
+
+    </dependency>
+
     <!-- cassandra test end -->
+
+
+
+    <!-- vert.x approach  end-->
+
   </dependencies>
   <build>
     <plugins>
