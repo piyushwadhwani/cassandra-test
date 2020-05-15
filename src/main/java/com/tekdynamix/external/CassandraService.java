@@ -1,7 +1,6 @@
 package com.tekdynamix.external;
 
 import com.datastax.oss.driver.api.core.CqlSession;
-import io.vertx.core.Vertx;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +27,18 @@ public class CassandraService {
     String table;
 
 
-    @Inject
-    Vertx vertx;
+    //@Inject
+    //Vertx vertx;
     private static final Logger log = LoggerFactory.getLogger(CassandraService.class);
 
 
-    @Inject
     CqlSession session;
+
+    @Inject
+    public CassandraService(CqlSession session) {
+        this.session = session;
+
+    }
 
 
     //CassandraClient client;
