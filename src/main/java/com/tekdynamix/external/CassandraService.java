@@ -1,9 +1,16 @@
 package com.tekdynamix.external;
 
+import com.datastax.dse.driver.api.core.cql.reactive.ReactiveResultSet;
+import com.datastax.dse.driver.api.core.cql.reactive.ReactiveRow;
 import com.datastax.oss.driver.api.core.CqlSession;
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.converters.multi.MultiRxConverters;
+import io.smallrye.mutiny.converters.multi.MultiReactorConverters;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -13,17 +20,17 @@ import javax.inject.Inject;
 public class CassandraService {
 
 
-    @ConfigProperty(name = "quarkus.cassandra.host")
+    //@ConfigProperty(name = "quarkus.cassandra.host")
     String dbHost;
 
-    @ConfigProperty(name = "quarkus.cassandra.port")
+    //@ConfigProperty(name = "quarkus.cassandra.port")
     String dbPort;
 
 
-    @ConfigProperty(name = "congruent.cassandra.signup.keyspace")
+    //@ConfigProperty(name = "congruent.cassandra.signup.keyspace")
     String keysapce;
 
-    @ConfigProperty(name = "congruent.cassandra.signup.table")
+    //@ConfigProperty(name = "congruent.cassandra.signup.table")
     String table;
 
 
@@ -43,7 +50,7 @@ public class CassandraService {
 
     //CassandraClient client;
 
-    @PostConstruct
+    //@PostConstruct
     void init() {
         log.info("Initializing Cassandra Client");
 
@@ -58,7 +65,15 @@ public class CassandraService {
 
     public String getResource() {
 
-        session.executeReactive("SELECT * FROM " + keysapce + "." + table);
+
+        Multi<ReactiveRow> multiFromFlux = Multi.createFrom().converter(MultiReactorConverters.fromFlux(),
+                Flux.from( session.executeReactive("SELECT * FROM " + keysapce + "." + table)));
+
+        multiFromFlux.subscribe().asStream().map(item -> {
+            log.info(item.toString());
+            return item;
+        });
+
 
        /* client.executeWithFullFetch("SELECT * FROM "+keysapce+"."+table+"  ", executeWithFullFetch -> {
             if (executeWithFullFetch.succeeded()) {

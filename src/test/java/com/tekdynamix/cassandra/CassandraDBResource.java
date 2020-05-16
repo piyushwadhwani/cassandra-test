@@ -72,8 +72,8 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
 
         try {
 
-            cluster = Cluster.builder()                                                    // (1)
-                    .addContactPoint(host).withPort(Integer.parseInt(port))
+            cluster = Cluster.builder()                                                   // (1)
+                    .withoutJMXReporting().withoutMetrics().addContactPoint(host).withPort(Integer.parseInt(port))
                     .build();
             Session session = cluster.connect();
             ResultSet rs = session.execute("select release_version from system.local");    // (3)
@@ -111,3 +111,5 @@ public class CassandraDBResource implements QuarkusTestResourceLifecycleManager 
     }
 
 }
+
+
